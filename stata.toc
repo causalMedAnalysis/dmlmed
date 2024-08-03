@@ -1,0 +1,32 @@
+{smcl}
+{txt}{sf}{ul off}
+{.-}
+{s6hlp}
+package ^dmlmed^ from https://github.com/causalMedAnalysis/dmlmed
+{smcl}
+{.-}
+{s6hlp}
+
+{smcl}
+{hilite:TITLE}{p 6 8}'DMLMED': module to perform causal mediation analysis using de-biased machine learning{p_end}
+{s6hlp}
+
+^DESCRIPTION/AUTHOR(S)^
+      
+dmlmed performs causal mediation analysis using debiased machine learning.
+      
+Requires: Stata version 15
+      
+Distribution-Date: 20240726
+      
+Author: Geoff Wodtke, University of Chicago
+Support: email wodtke@@uchicago.edu
+      
+
+^INSTALLATION FILES^                              (type ^net install^ ^dmlmed^)
+      dmlmed.ado
+	  dmlmed_type1.ado
+	  dmlmed_type2.ado
+      dmlmed.sthlp
+
+{txt}{sf}{ul off}
