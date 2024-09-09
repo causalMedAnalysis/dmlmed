@@ -8,7 +8,7 @@ package ^dmlmed^ from https://github.com/causalMedAnalysis/dmlmed
 {s6hlp}
 
 {smcl}
-{hilite:TITLE}{p 6 8}'DMLMED': module to perform causal mediation analysis using de-biased machine learning{p_end}
+{hilite:TITLE}{p 6 8}'DMLMED': module to perform causal mediation analysis using de-biased machine learning {p_end}
 {s6hlp}
 
 ^DESCRIPTION/AUTHOR(S)^
@@ -25,8 +25,10 @@ Support: email wodtke@@uchicago.edu
 
 ^INSTALLATION FILES^                              (type ^net install^ ^dmlmed^)
       dmlmed.ado
-	  dmlmed_type1.ado
-	  dmlmed_type2.ado
+	  mr1forest.ado
+	  mr2forest.ado
+	  mr1lasso.ado
+	  mr2lasso.ado
       dmlmed.sthlp
 
 {txt}{sf}{ul off}

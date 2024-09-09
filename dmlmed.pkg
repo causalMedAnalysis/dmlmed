@@ -10,6 +10,8 @@ d Author: Geoff Wodtke, University of Chicago
 d Support: email wodtke@@uchicago.edu
 d
 f dmlmed.ado
-f dmlmed_type1.ado
-f dmlmed_type2.ado
+f mr1forest.ado
+f mr2forest.ado
+f mr1lasso.ado
+f mr2lasso.ado
 f dmlmed.sthlp
