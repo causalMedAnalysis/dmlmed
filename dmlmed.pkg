@@ -1,6 +1,6 @@
 d 'DMLMED': module to perform causal mediation analysis using de-biased machine learning
 d
-d mrmed performs causal mediation analysis using de-biased machine learning.
+d dmlmed performs causal mediation analysis using de-biased machine learning.
 d      
 d Requires: Stata version 15
 d
