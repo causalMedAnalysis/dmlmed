@@ -16,7 +16,7 @@ program define mr2forest, rclass
 		[ cvars(varlist numeric) ///
 		xfits(integer 5) ///
 		seed(integer 12345) ///
-		censor * ] 
+		censor(numlist min=2 max=2) * ] 
 	
 	qui {
 		marksample touse
@@ -134,15 +134,15 @@ program define mr2forest, rclass
 	qui replace `ipw`dstar'`d'CM' = (1/`pi`dstar'_C')*(`pi`dstar'_CM'/`pi`d'_CM') if `dvar'==`d' & `touse'
 	
 	if ("`censor'"!="") {
-		qui centile `ipw`d'C' if `ipw`d'C'!=. & `dvar'==`d' & `touse', c(1 99) 
+		qui centile `ipw`d'C' if `ipw`d'C'!=. & `dvar'==`d' & `touse', c(`censor') 
 		qui replace `ipw`d'C'=r(c_1) if `ipw`d'C'<r(c_1) & `ipw`d'C'!=. & `dvar'==`d' & `touse'
 		qui replace `ipw`d'C'=r(c_2) if `ipw`d'C'>r(c_2) & `ipw`d'C'!=. & `dvar'==`d' & `touse'
 	
-		qui centile `ipw`dstar'C' if `ipw`dstar'C'!=. & `dvar'==`dstar' & `touse', c(1 99) 
+		qui centile `ipw`dstar'C' if `ipw`dstar'C'!=. & `dvar'==`dstar' & `touse', c(`censor') 
 		qui replace `ipw`dstar'C'=r(c_1) if `ipw`dstar'C'<r(c_1) & `ipw`dstar'C'!=. & `dvar'==`dstar' & `touse'
 		qui replace `ipw`dstar'C'=r(c_2) if `ipw`dstar'C'>r(c_2) & `ipw`dstar'C'!=. & `dvar'==`dstar' & `touse'
 
-		qui centile `ipw`dstar'`d'CM' if `ipw`dstar'`d'CM'!=. & `dvar'==`d' & `touse', c(1 99) 
+		qui centile `ipw`dstar'`d'CM' if `ipw`dstar'`d'CM'!=. & `dvar'==`d' & `touse', c(`censor') 
 		qui replace `ipw`dstar'`d'CM'=r(c_1) if `ipw`dstar'`d'CM'<r(c_1) & `ipw`dstar'`d'CM'!=. & `dvar'==`d' & `touse'
 		qui replace `ipw`dstar'`d'CM'=r(c_2) if `ipw`dstar'`d'CM'>r(c_2) & `ipw`dstar'`d'CM'!=. & `dvar'==`d' & `touse'
 	}

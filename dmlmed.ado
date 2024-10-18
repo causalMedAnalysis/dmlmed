@@ -18,7 +18,7 @@ program define dmlmed, eclass
 		[ cvars(varlist numeric) ///
 		xfits(integer 5) ///
 		seed(integer 12345) ///
-		censor * ] 
+		censor(numlist min=2 max=2) * ] 
 
 	qui {
 		marksample touse
@@ -43,6 +43,26 @@ program define dmlmed, eclass
 		display as error "Error: model must be chosen from: `modeltypes'."
 		error 198		
 	}
+
+	if ("`censor'" != "") {
+		local censor1: word 1 of `censor'
+		local censor2: word 2 of `censor'
+
+		if (`censor1' >= `censor2') {
+			di as error "The first number in the censor() option must be less than the second."
+			error 198
+		}
+
+		if (`censor1' < 1 | `censor1' > 49) {
+			di as error "The first number in the censor() option must be between 1 and 49."
+			error 198
+		}
+
+		if (`censor2' < 51 | `censor2' > 99) {
+			di as error "The second number in the censor() option must be between 51 and 99."
+			error 198
+		}
+	}
 	
 	if ("`type'"=="mr1" & "`model'"=="rforest") {
 	
@@ -55,7 +75,7 @@ program define dmlmed, eclass
 		}
 	
 		if (`num_mvars' > 1) {
-			display as error "type(mr1forest) robust estimation only supports a single mediator"
+			display as error "type(mr1) robust estimation only supports a single mediator"
 			display as error "but `num_mvars' mediators --`mvars' -- have been specified."
 			error 198
 		}
@@ -71,7 +91,7 @@ program define dmlmed, eclass
 
 		mr1forest `yvar' if `touse', ///
 			dvar(`dvar') mvar(`mvars') d(`d') dstar(`dstar') ///
-			cvars(`cvars') xfits(`xfits') seed(`seed') `censor' `options'
+			cvars(`cvars') xfits(`xfits') seed(`seed') censor(`censor') `options'
 			
 	}
 
@@ -94,7 +114,7 @@ program define dmlmed, eclass
 		}
 		
 		if (`num_mvars' > 1) {
-			display as error "type(mr1lasso) robust estimation only supports a single mediator"
+			display as error "type(mr1) robust estimation only supports a single mediator"
 			display as error "but `num_mvars' mediators --`mvars' -- have been specified."
 			error 198
 		}
@@ -110,7 +130,7 @@ program define dmlmed, eclass
 
 		mr1lasso `yvar' if `touse', ///
 			dvar(`dvar') mvar(`mvars') d(`d') dstar(`dstar') ///
-			cvars(`cvars') xfits(`xfits') seed(`seed') `censor' `options'
+			cvars(`cvars') xfits(`xfits') seed(`seed') censor(`censor') `options'
 			
 	}
 	
@@ -133,7 +153,7 @@ program define dmlmed, eclass
 		
 		mr2forest `yvar' `mvars' if `touse', ///
 			dvar(`dvar') d(`d') dstar(`dstar') cvars(`cvars') ///
-			xfits(`xfits') seed(`seed') `censor' `options'
+			xfits(`xfits') seed(`seed') censor(`censor') `options'
 				
 	}
 
@@ -164,7 +184,7 @@ program define dmlmed, eclass
 		
 		mr2lasso `yvar' `mvars' if `touse', ///
 			dvar(`dvar') d(`d') dstar(`dstar') cvars(`cvars') ///
-			xfits(`xfits') seed(`seed') `censor' `options'
+			xfits(`xfits') seed(`seed') censor(`censor') `options'
 				
 	}
 	

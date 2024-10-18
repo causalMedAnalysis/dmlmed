@@ -16,7 +16,7 @@ program define mr1forest, rclass
 		[ cvars(varlist numeric) ///
 		xfits(integer 5) ///
 		seed(integer 12345) ///
-		censor * ] 
+		censor(numlist min=2 max=2) * ] 
 	
 	qui {
 		marksample touse
@@ -49,7 +49,7 @@ program define mr1forest, rclass
 	
 	foreach v in `tvars' {
 		qui gen ``v'' = . if `touse'
-		}
+	}
 	
 	forval k=1/`xfits' {
 		
@@ -152,15 +152,15 @@ program define mr1forest, rclass
 	qui gen `rmpw' = `ipw`d''*(`f_M_CD`dstar''/`f_M_CD`d'') if `touse'
 
 	if ("`censor'"!="") {
-		qui centile `ipw`d'' if `ipw`d''!=. & `dvar'==`d' & `touse', c(1 99) 
+		qui centile `ipw`d'' if `ipw`d''!=. & `dvar'==`d' & `touse', c(`censor') 
 		qui replace `ipw`d''=r(c_1) if `ipw`d''<r(c_1) & `ipw`d''!=. & `dvar'==`d' & `touse'
 		qui replace `ipw`d''=r(c_2) if `ipw`d''>r(c_2) & `ipw`d''!=. & `dvar'==`d' & `touse'
 
-		qui centile `ipw`dstar'' if `ipw`dstar''!=. & `dvar'==`dstar' & `touse', c(1 99) 
+		qui centile `ipw`dstar'' if `ipw`dstar''!=. & `dvar'==`dstar' & `touse', c(`censor') 
 		qui replace `ipw`dstar''=r(c_1) if `ipw`dstar''<r(c_1) & `ipw`dstar''!=. & `dvar'==`dstar' & `touse'
 		qui replace `ipw`dstar''=r(c_2) if `ipw`dstar''>r(c_2) & `ipw`dstar''!=. & `dvar'==`dstar' & `touse'
 
-		qui centile `rmpw' if `rmpw'!=. & `dvar'==`d' & `touse', c(1 99) 
+		qui centile `rmpw' if `rmpw'!=. & `dvar'==`d' & `touse', c(`censor') 
 		qui replace `rmpw'=r(c_1) if `rmpw'<r(c_1) & `rmpw'!=. & `dvar'==`d' & `touse'
 		qui replace `rmpw'=r(c_2) if `rmpw'>r(c_2) & `rmpw'!=. & `dvar'==`d' & `touse'
 	}

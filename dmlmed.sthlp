@@ -19,10 +19,10 @@
 {opt dvar(varname)} 
 {opt d(real)} 
 {opt dstar(real)} 
-[{opt cvars(varlist)} 
+{opt cvars(varlist)} 
 {opt xfits(integer)} 
 {opt seed(integer)}
-{opt censor}]
+{opt censor(numlist)}
 [{it:{help rforest##options:rforest_options}}]
 [{it:{help lasso2##options:lasso2_options}}]
 
@@ -30,7 +30,7 @@
 For type(mr1), both the exposure and a univariate mediator must be binary (0/1). 
 For type(mr2), only the exposure must be binary (0/1), and multiple mediators are permitted.
 
-{phang}{opt model(string)} - this specifies which ML model to implement. Options are rforest and lasso. 
+{phang}{opt model(string)} - this specifies which machine learning algorithm to implement. Options are rforest and lasso. 
 For model(rforest), random forests are used to predict the nuisance terms. 
 For model(lasso), LASSO models with all two-way interactions are used to predict the nuisance terms.
 
@@ -54,7 +54,8 @@ variables need to be coded as a series of dummy variables before being entered a
 
 {phang}{opt seed(integer)} - this option specifies the seed for cross-fitting and model training.
 
-{phang}{opt censor} - this option specifies that the inverse probability weights used in the robust estimating equations are censored at their 1st and 99th percentiles.
+{phang}{opt censor(numlist)} - this option specifies that the inverse probability weights used in the robust estimating equations are censored at the percentiles supplied in {numlist}. For example,
+censor(1 99) censors the weights at their 1st and 99th percentiles.
 
 {phang}{it:{help rforest##options:rforest_options}} - all {help rforest} options are available when using model(rforest). 
 
@@ -62,9 +63,9 @@ variables need to be coded as a series of dummy variables before being entered a
 
 {title:Description}
 
-{pstd}{cmd:dmlmed} performs causal mediation analysis using de-biased machine learning (DML). Currently, the command supports 
-implementation of DML only with random forests and LASSO regression. It requires prior installation of the {cmd:rforest} and 
-{cmd:lassopack} modules. {p_end}
+{pstd}{cmd:dmlmed} performs causal mediation analysis using de-biased machine learning (DML), and it computes inferential statistics using
+analytic standard errors and a normal approximation. Currently, the command supports implementation of DML with random forests and LASSO models. 
+It requires prior installation of the {cmd:rforest} and {cmd:lassopack} modules. {p_end}
 
 {pstd}For type(mr1) estimation, three models are trained: (1) a model for the exposure conditional on baseline covariates, (2) a model for a single 
 binary mediator conditional on the exposure and baseline covariates, and (3) a model for the outcome conditional on the exposure, mediator, and 
@@ -80,7 +81,7 @@ different types of mediators (binary, ordinal, or continuous) and also supports 
 type(mr2) estimation targets multivariate natural direct and indirect effects.  {p_end}
 
 {pstd}When model(rforest) is specified, all the models outlined previously are fit using random forests. Alternatively, when model(lasso) is specified,
-all these models are fit using the LASSO. {p_end}
+all these models are fit using the LASSO, with all two-way interactions included. {p_end}
 
 {title:Examples}
 
@@ -89,27 +90,27 @@ all these models are fit using the LASSO. {p_end}
 
 {pstd} type(mr1) estimation with random forests and censored weights: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99)} {p_end}
 
 {pstd} type(mr1) estimation with random forests and censored weights, using custom hyperparameters: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor iter(200) numvars(5) lsize(5)} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99) iter(200) numvars(5) lsize(5)} {p_end}
 
 {pstd} type(mr1) estimation with the LASSO and censored weights: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(lasso) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr1) model(lasso) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99)} {p_end}
 
 {pstd} type(mr2) estimation with random forests and censored weights, using custom hyperparameters: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr2) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor iter(200) numvars(5) lsize(5)} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539, type(mr2) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99) iter(200) numvars(5) lsize(5)} {p_end}
 
 {pstd} type(mr2) estimation with multiple mediators, random forests, and censored weights: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, type(mr2) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, type(mr2) model(rforest) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99)} {p_end}
 
 {pstd} type(mr2) estimation with multiple mediators, the LASSO, and censored weights: {p_end}
  
-{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, type(mr2) model(lasso) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor} {p_end}
+{phang2}{cmd:. dmlmed std_cesd_age40 ever_unemp_age3539 log_faminc_adj_age3539, type(mr2) model(lasso) dvar(att22) cvars(female black hispan paredu parprof parinc_prank famsize afqt3) d(1) dstar(0) censor(1 99)} {p_end}
 
 {title:Saved results}
 
